@@ -1,11 +1,16 @@
 package com.github.enesusta.kaset.controller;
 
+import com.github.enesusta.kaset.streaming.Mp3ResourceStreamingOutput;
 import org.jboss.logging.Logger;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,12 +18,28 @@ import java.io.InputStreamReader;
 import java.util.Stack;
 
 @RestController
-@RequestMapping("/mp3")
+@Path("/mp3")
 public class Mp3Controller {
 
     private final static Logger logger = Logger.getLogger(Mp3Controller.class);
 
-    @GetMapping
+    @Autowired
+    Mp3ResourceStreamingOutput mp3ResourceStreamingOutput;
+
+    @GET
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public Response getStream() {
+        return Response
+                .ok(mp3ResourceStreamingOutput)
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Headers", "origin, content-type, accept, authorization")
+                .header("Access-Control-Allow-Credentials", "true")
+                .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD")
+                .header("Access-Control-Max-Age", "1209600")
+                .build();
+    }
+
+    //@GetMapping
     public byte[] retrieveMp3File(@RequestParam String url) {
 
         Stack<String> stack = new Stack<>();

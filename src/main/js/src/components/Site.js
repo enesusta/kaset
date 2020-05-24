@@ -9,7 +9,7 @@ function Site() {
 
     return (
         <div className="site-container">
-            <h5>Insert a valid URL</h5>
+            <p>Insert a valid URL</p>
             <form className="site-form">
                 <input
                     type="text"
@@ -17,7 +17,6 @@ function Site() {
                 />
                 <button className="button">Download</button>
             </form>
-            <h5>{`url is ${url}`}</h5>
         </div>
     )
 }

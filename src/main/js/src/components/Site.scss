@@ -1,0 +1,33 @@
+.site-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 30px;
+
+  h5 {
+    text-align: center;
+  }
+
+  .site-form {
+    display: grid;
+    grid-template-columns: 4fr 1fr;
+    margin-top: 15px;
+
+    input {
+      //       border-radius: 3px;
+      &:focus {
+        outline: none !important;
+        border: 1px solid #eee;
+        box-shadow: 0 0 3px #719ece;
+      }
+    }
+
+    .button {
+      padding: 1px 5px;
+      background-color: $button;
+
+      &:hover {
+        background-color: $button-hover;
+      }
+    }
+  }
+}

@@ -38,20 +38,15 @@ public class Mp3Controller {
             logger.info(command);
 
             Process process = Runtime.getRuntime().exec(command);
-
             InputStream is = process.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);
 
             String str;
-            while ((str = br.readLine()) != null) {
-                stack.push(str);
-                System.out.println(str);
-            }
-
-            System.out.println("---");
+            while ((str = br.readLine()) != null) stack.push(str);
 
             stack.pop();
+
             final String destinationOfFile = stack.pop().substring(22);
             final String[] urls = destinationOfFile.split("/");
             final String nameOfFile = urls[4];

@@ -1,0 +1,25 @@
+@import url("https://fonts.googleapis.com/css?family=Poppins");
+
+@import "./variables.scss";
+@import "../scss/Header.scss";
+@import "../scss/Site.scss";
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+li,
+a,
+button,
+div,
+h5,
+h4 {
+  font-family: "Poppins", sans-serif;
+}
+
+.container {
+  width: 60%;
+  margin: 0 auto;
+}

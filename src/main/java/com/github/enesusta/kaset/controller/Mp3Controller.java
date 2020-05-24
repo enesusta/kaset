@@ -30,8 +30,10 @@ public class Mp3Controller {
     @GET
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getStream(@QueryParam("url") String url) {
-        logger.info("Url is " +url);
+
+        logger.info("Url is " + url);
         logger.info("react istek atayor.");
+
         return Response
                 .ok(mp3ResourceStreamingOutput)
                 .header("Access-Control-Allow-Origin", "http://localhost:3000")
@@ -39,6 +41,7 @@ public class Mp3Controller {
                 .header("Access-Control-Allow-Credentials", "true")
                 .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD")
                 .header("Access-Control-Max-Age", "1209600")
+                .header("Content-Disposition", "inline;")
                 .build();
     }
 

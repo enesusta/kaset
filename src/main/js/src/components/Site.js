@@ -1,8 +1,11 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios';
+
 
 function Site() {
     const [url, setUrl] = useState("");
+    const [isDone, setIsDone] = useState(false);
+    const [percent, setPercent] = useState(0);
 
     const urlHandler = e => {
         setUrl(e.target.value);
@@ -11,46 +14,20 @@ function Site() {
     const clickHandler = e => {
 
         e.preventDefault();
+
+        console.log("clicked");
         const apiCall = `${process.env.REACT_APP_API}/mp3?url=${url}`;
 
-        axios({
-            url: apiCall,
-            method: 'GET',
-            responseType: 'blob'
-        }).then(res => {
-            console.log(`res is ${res.data}`);
+        setIsDone(false);
 
-        })
-            .catch(err => {
-                console.log(err);
+        axios
+            .get(apiCall)
+            .then(res => {
+                console.log(res.data);
+                setIsDone(true);
             });
 
-    }
-
-    const test = e => {
-
-        const apiCall = `${process.env.REACT_APP_API}/mp3?url=${url}`;
-
-        e.preventDefault();
-        fetch(apiCall)
-            .then(response => {
-                const reader = response.body.getReader();
-                console.log(reader);
-
-                reader.read().then(function processText({ done, value }) {
-                    // Result objects contain two properties:
-                    // done  - true if the stream has already given you all its data.
-                    // value - some data. Always undefined when done is true.
-                    console.log(value);
-
-                    if (done) {
-                        console.log("Stream complete");
-                        return;
-                    }
-                });
-
-            });
-    }
+    };
 
     return (
         <div className="site-container">
@@ -60,10 +37,23 @@ function Site() {
                     type="text"
                     onChange={urlHandler}
                 />
-                <button className="button" onClick={test}>Download</button>
+                <button className="button" onClick={clickHandler}>Download</button>
+                {!isDone ? "in-progress" : "done"}
             </form>
         </div>
     )
 }
 
 export default Site;
+
+/**
+ *     return new Promise((resolve, reject) => {
+
+            const oReq = new XMLHttpRequest();
+            oReq.overrideMimeType("application/octet-stream");
+            oReq.responseType("arraybuffer");
+            oReq.open('GET', apiCall, true);
+            oReq.send();
+        });
+
+ */

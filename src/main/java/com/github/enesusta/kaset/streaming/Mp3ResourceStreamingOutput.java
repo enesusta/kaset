@@ -1,9 +1,6 @@
 package com.github.enesusta.kaset.streaming;
 
-import com.github.enesusta.kaset.domain.Kaset;
-import com.github.enesusta.kaset.mock.MockResource;
 import org.jboss.logging.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.WebApplicationException;
@@ -17,29 +14,21 @@ public class Mp3ResourceStreamingOutput implements StreamingOutput {
 
     private final static Logger logger = Logger.getLogger(Mp3ResourceStreamingOutput.class);
 
-    private Kaset kaset;
-
-    @Autowired
-    MockResource mockResource;
+    private InputStream inputStream;
 
     @Override
     public void write(OutputStream outputStream) throws IOException, WebApplicationException {
-
         logger.info(2 << 13);
+
         int len;
+        byte[] bytes = new byte[2 << 13];
 
-        try (InputStream inputStream = mockResource.inputStream()) {
+        while ((len = inputStream.read(bytes)) >= 0) outputStream.write(bytes, 0, len);
 
-            byte[] bytes = new byte[2 << 13];
-            while ((len = inputStream.read(bytes)) >= 0) outputStream.write(bytes, 0, len);
-
-            outputStream.close();
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
+        outputStream.close();
     }
 
-    public void setKaset(Kaset kaset) {
-        this.kaset = kaset;
+    public void setInputStream(InputStream inputStream) {
+        this.inputStream = inputStream;
     }
 }

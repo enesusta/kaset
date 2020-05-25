@@ -10,9 +10,9 @@ import java.io.InputStreamReader;
 import java.util.Stack;
 
 @Service
-public class DefaultDownloaderService implements DownloaderService {
+public class DefaultDownloadService implements DownloadService {
 
-    private final static Logger logger = Logger.getLogger(DefaultDownloaderService.class);
+    private final static Logger logger = Logger.getLogger(DefaultDownloadService.class);
 
     @Override
     public String getKaset(final String url) {

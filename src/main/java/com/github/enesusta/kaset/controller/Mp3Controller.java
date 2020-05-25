@@ -1,7 +1,9 @@
 package com.github.enesusta.kaset.controller;
 
-import com.github.enesusta.kaset.service.DownloaderService;
+import com.github.enesusta.kaset.service.DownloadService;
+import com.github.enesusta.kaset.service.StreamService;
 import com.github.enesusta.kaset.streaming.Mp3ResourceStreamingOutput;
+import com.github.enesusta.kaset.util.OsUtil;
 import org.jboss.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +14,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.InputStream;
 
 @RestController
 @Path("/mp3")
@@ -23,14 +26,25 @@ public class Mp3Controller {
     Mp3ResourceStreamingOutput mp3ResourceStreamingOutput;
 
     @Autowired
-    DownloaderService downloaderService;
+    DownloadService downloadService;
+
+    @Autowired
+    StreamService streamService;
+
+    @Autowired
+    OsUtil osUtil;
 
     @GET
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
     public Response getStream(@QueryParam("url") String url) {
 
         logger.info("Url is " + url);
-        final String nameOfTheFile = downloaderService.getKaset(url);
+        final String nameOfTheFile = downloadService.getKaset(url);
+        final String currentFileLocation = osUtil.getCurrentFileLocation(nameOfTheFile);
+        final String attachment = String.format("attachment; filename=%s", nameOfTheFile);
+        final InputStream inputStream = streamService.stream(currentFileLocation);
+
+        mp3ResourceStreamingOutput.setInputStream(inputStream);
 
         return Response
                 .ok(mp3ResourceStreamingOutput)
@@ -39,7 +53,7 @@ public class Mp3Controller {
                 .header("Access-Control-Allow-Credentials", "true")
                 .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, HEAD")
                 .header("Access-Control-Max-Age", "1209600")
-                .header("Content-Disposition", "attachment; filename=test.mp3")
+                .header("Content-Disposition", attachment)
                 .build();
     }
 

@@ -1,7 +1,7 @@
 package com.github.enesusta.kaset.controller;
 
+import com.github.enesusta.kaset.service.FileQueueService;
 import com.github.enesusta.kaset.service.DownloadService;
-import com.github.enesusta.kaset.service.StreamService;
 import com.github.enesusta.kaset.streaming.Mp3ResourceStreamingOutput;
 import com.github.enesusta.kaset.util.OsUtil;
 import org.jboss.logging.Logger;
@@ -14,7 +14,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.io.InputStream;
 
 @RestController
 @Path("/mp3")
@@ -23,13 +22,13 @@ public class Mp3Controller {
     private final static Logger logger = Logger.getLogger(Mp3Controller.class);
 
     @Autowired
-    Mp3ResourceStreamingOutput mp3ResourceStreamingOutput;
-
-    @Autowired
     DownloadService downloadService;
 
     @Autowired
-    StreamService streamService;
+    FileQueueService fileQueueService;
+
+    @Autowired
+    Mp3ResourceStreamingOutput mp3ResourceStreamingOutput;
 
     @Autowired
     OsUtil osUtil;
@@ -39,12 +38,11 @@ public class Mp3Controller {
     public Response getStream(@QueryParam("url") String url) {
 
         logger.info("Url is " + url);
-        final String nameOfTheFile = downloadService.getKaset(url);
+        final String nameOfTheFile = downloadService.downloadTheFileAndGetItsName(url);
         final String currentFileLocation = osUtil.getCurrentFileLocation(nameOfTheFile);
         final String attachment = String.format("attachment; filename=%s", nameOfTheFile);
-        final InputStream inputStream = streamService.stream(currentFileLocation);
 
-        mp3ResourceStreamingOutput.setInputStream(inputStream);
+        fileQueueService.add(currentFileLocation);
 
         return Response
                 .ok(mp3ResourceStreamingOutput)

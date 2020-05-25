@@ -1,10 +1,13 @@
 package com.github.enesusta.kaset.streaming;
 
+import com.github.enesusta.kaset.service.FileQueueService;
 import org.jboss.logging.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -14,11 +17,12 @@ public class Mp3ResourceStreamingOutput implements StreamingOutput {
 
     private final static Logger logger = Logger.getLogger(Mp3ResourceStreamingOutput.class);
 
-    private InputStream inputStream;
+    @Autowired
+    FileQueueService fileQueueService;
 
     @Override
-    public void write(OutputStream outputStream) throws IOException, WebApplicationException {
-        logger.info(2 << 13);
+    public void write(final OutputStream outputStream) throws IOException, WebApplicationException {
+        final InputStream inputStream = new FileInputStream(fileQueueService.getFileInProgress());
 
         int len;
         byte[] bytes = new byte[2 << 13];
@@ -26,9 +30,7 @@ public class Mp3ResourceStreamingOutput implements StreamingOutput {
         while ((len = inputStream.read(bytes)) >= 0) outputStream.write(bytes, 0, len);
 
         outputStream.close();
+        fileQueueService.delete();
     }
 
-    public void setInputStream(InputStream inputStream) {
-        this.inputStream = inputStream;
-    }
 }

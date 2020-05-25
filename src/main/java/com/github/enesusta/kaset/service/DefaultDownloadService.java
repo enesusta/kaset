@@ -15,7 +15,7 @@ public class DefaultDownloadService implements DownloadService {
     private final static Logger logger = Logger.getLogger(DefaultDownloadService.class);
 
     @Override
-    public String getKaset(final String url) {
+    public String downloadTheFileAndGetItsName(final String url) {
 
         final Stack<String> stack = new Stack<>();
         final String command =
@@ -25,7 +25,7 @@ public class DefaultDownloadService implements DownloadService {
                         "--audio-quality 0",
                         url);
 
-        String nameOfFile = null;
+        String nameOfTheFile = null;
 
         try {
 
@@ -42,15 +42,15 @@ public class DefaultDownloadService implements DownloadService {
 
             stack.pop();
 
-            final String destinationOfFile = stack.pop().substring(22);
-            final String[] urls = destinationOfFile.split("/");
-            nameOfFile = urls[4];
+            final String destinationOfTheFile = stack.pop().substring(22);
+            final String[] patterns = destinationOfTheFile.split("/");
+            nameOfTheFile = patterns[4];
 
 
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
 
-        return nameOfFile;
+        return nameOfTheFile;
     }
 }

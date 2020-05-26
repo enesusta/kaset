@@ -12,22 +12,10 @@ function Site() {
     }
 
     const clickHandler = e => {
-
         e.preventDefault();
+    }
 
-        console.log("clicked");
-        const apiCall = `${process.env.REACT_APP_API}/mp3?url=${url}`;
-
-        setIsDone(false);
-
-        axios
-            .get(apiCall)
-            .then(res => {
-                console.log(res.data);
-                setIsDone(true);
-            });
-
-    };
+    const apiCall = `${process.env.REACT_APP_API}/mp3?url=${url}`;
 
     return (
         <div className="site-container">
@@ -37,7 +25,7 @@ function Site() {
                     type="text"
                     onChange={urlHandler}
                 />
-                <button className="button" onClick={clickHandler}>Download</button>
+                <a className="button" href={apiCall} download>Download</a>
                 {!isDone ? "in-progress" : "done"}
             </form>
         </div>

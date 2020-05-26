@@ -12,8 +12,11 @@
     grid-template-columns: 4fr 1fr;
     margin-top: 15px;
 
-    input {
+    a {
       //       border-radius: 3px;
+      text-align: center;
+      text-decoration: none;
+      color: black;
       border: 1px solid $input;
       border-radius: 3px;
       &:focus {
